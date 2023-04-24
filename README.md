@@ -3,14 +3,14 @@
 PyTorch implementations of Generative Adversarial Networks.
 
 - Implementation list
-[] GAN (original)
+- [ ] GAN (original)
 
-[] DCGAN
+- [ ] DCGAN
 
-[] LSGAN
+- [ ] LSGAN
 
-[] WGAN
+- [ ] WGAN
 
-[] WGAN-GP
+- [ ] WGAN-GP
 
-[] WGAN-Div
+- [ ] WGAN-Div
