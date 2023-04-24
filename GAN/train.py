@@ -43,3 +43,4 @@ train_dataset = Data_simple(True, "mnist")
 train_loader = DataLoader(train_dataset, batch_size=4, num_workers=4, shuffle=True)
 
 # print_stats(train_dataset)
+
