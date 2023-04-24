@@ -19,3 +19,11 @@ python eval.py
 #### FashionMNIST
 
 #### CIFAR10
+
+
+#### TODO
+- [x] model code
+- [ ] train code
+- [ ] infer code
+- [ ] vis results
+- [ ] update wandb to log losses 
