@@ -23,7 +23,8 @@ python eval.py
 
 #### TODO
 - [x] model code
-- [ ] train code
-- [ ] infer code
+- [x] train code
+- [ ] add model save code
+- [ ] add infer code : load check point
 - [ ] vis results
 - [ ] update wandb to log losses 
