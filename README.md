@@ -3,7 +3,7 @@
 PyTorch implementations of Generative Adversarial Networks.
 
 - Implementation list
-- [ ] GAN (original)
+- [x] [GAN (original)](GAN/)
 
 - [ ] DCGAN
 
