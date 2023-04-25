@@ -15,21 +15,21 @@ python train.py
 
 ### Generated Images
 #### MNIST
-<img src=\results\mnist\200_gif_results_mnist.gif>
+<img src=results\mnist\200_gif_results_mnist.gif>
 
 Epochs : 200
 
 #### FashionMNIST
-<img src=\results\fashion\200_gif_results_fashion.gif>
+<img src=results\fashion\200_gif_results_fashion.gif>
 
 Epochs : 200
 
 #### CIFAR10
-<img src=\results\cifar10\200_gif_results_cifar10.gif>
+<img src=results\cifar10\200_gif_results_cifar10.gif>
 
 Epochs : 200
 
-<img src=\results\cifar10\500_gif_results_cifar10.gif>
+<img src=results\cifar10\500_gif_results_cifar10.gif>
 
 Epochs : 500
 
