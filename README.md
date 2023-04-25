@@ -5,7 +5,13 @@ PyTorch implementations of Generative Adversarial Networks.
 - Implementation list
 - [x] [GAN (original)](GAN/)
 
+- [ ] CGAN
+
 - [ ] DCGAN
+
+- [ ] Pix2Pix
+
+- [ ] InfoGAN
 
 - [ ] LSGAN
 
@@ -14,3 +20,19 @@ PyTorch implementations of Generative Adversarial Networks.
 - [ ] WGAN-GP
 
 - [ ] WGAN-Div
+
+- [ ] ACGAN
+
+- [ ] SAGAN
+
+- [ ] SNGAN
+
+- [ ] ProGAN
+
+- [ ] BigGAN
+
+- [ ] StyleGAN
+
+- [ ] CycleGAN
+
+...
