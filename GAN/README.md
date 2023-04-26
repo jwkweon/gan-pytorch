@@ -1,4 +1,6 @@
 # PyTorch implementation of [GAN](https://arxiv.org/abs/1406.2661).
+Generative Adversarial Networks
+
 
 ## Modifications for Implementation
 The provided model implementation includes three datasets: MNIST, FashionMNIST, and CIFAR10. For convenience, the output image size of the model has been changed to 32x32 for all datasets, and more information can be found in the gan.py file. 
