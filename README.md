@@ -7,7 +7,7 @@ PyTorch implementations of Generative Adversarial Networks.
 
 - [ ] CGAN
 
-- [ ] DCGAN
+- [x] [DCGAN](DCGAN/)
 
 - [ ] Pix2Pix
 
