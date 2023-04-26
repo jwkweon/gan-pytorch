@@ -2,7 +2,7 @@
 UNSUPERVISED REPRESENTATION LEARNING WITH DEEP CONVOLUTIONAL GENERATIVE ADVERSARIAL NETWORKS.
 
 ## Modifications for Implementation
-
+To ensure output size (64 x 64), I set kernel size, stride, padding size to 4, 2, 1, respectively.
 
 
 ## Run Code
@@ -37,10 +37,11 @@ Epochs : 200
 
 
 ### TODO
-- [ ] model code
-- [ ] train code
+- [x] model code
+- [x] train code
 - [ ] add model save code
 - [ ] add infer code : load check point
+- [ ] add other datasets (LSUN, ImageNet)
 - [ ] vis results
 - [ ] add argparse for hyperparams
 - [ ] update wandb to log losses 
