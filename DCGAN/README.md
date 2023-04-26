@@ -13,13 +13,28 @@ python train.py
 
 
 ## Generated Images
-### MNIST
-
-
 ### CIFAR10
 
+<img src=results\cifar10\0010_results_cifar10.png>
+<img src=results\cifar10\0020_results_cifar10.png>
+<img src=results\cifar10\0030_results_cifar10.png>
+<img src=results\cifar10\0040_results_cifar10.png>
+<img src=results\cifar10\0050_results_cifar10.png>
 
-Epochs : 200
+Epochs : 10 - 50
+
+
+<img src=results\cifar10\0100_results_cifar10.png>
+<img src=results\cifar10\0200_results_cifar10.png>
+<img src=results\cifar10\0300_results_cifar10.png>
+<img src=results\cifar10\0500_results_cifar10.png>
+<img src=results\cifar10\1000_results_cifar10.png>
+
+Epochs : 100, 200, 300, 500, 1000
+
+<img src=results\cifar10\1000_gif_results_cifar10.gif>
+
+Epochs : 1000
 
 ### LSUN
 
@@ -30,7 +45,7 @@ Epochs : 200
 
 Epochs : 200
 
-<img src=>
+
 
 ## Walking in the latent space
 
