@@ -58,92 +58,107 @@ def save_gifs(n_samples, images, num_epochs, data):
     imgs = [np.array(to_image(i)) for i in images]
     imageio.mimsave(path_save + f'{num_epochs}_gif_results_{data}.gif', imgs)
 
-if torch.cuda.is_available():
-    device = 'cuda'
-else:
-    device = 'cpu'
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='help')
+    parser.add_argument('--dataset_name', type=str, help='["mnist", "fashion", "cifar10"]', default='mnist')
+    parser.add_argument('--dataset_path', type=str, default='./datasets')
+    parser.add_argument('--n_batch', type=int, default='512', help='num of batch_size')
+    parser.add_argument('--n_epochs', type=int, default='200', help='num of epochs to train')
+    parser.add_argument('--n_samples', type=int, default='36', help='num to generate samples')
+    parser.add_argument('--z_dim', type=int, default='100', help='lenght of latent vector')
+    parser.add_argument('--lr', type=float, default='0.001', help='learning rate')
+    parser.add_argument('--num_workers', type=int, default='4', help='num of loader workers')
+    # parser.add_argument('--save_wandb_img_epochs', type=int, default='50', \
+    #                         help='num of epochs to save wandb images')
+    # parser.add_argument('--save_path', type=str, default='checkpoints')
+    args = parser.parse_args()
 
-dataset_name = 'mnist' # ["mnist", "fashion", "cifar10"]
-n_batch = 512
-n_epochs = 200
-n_samples = 36
-z_dim = 100
-to_image = ToPILImage()
+    if torch.cuda.is_available():
+        device = 'cuda'
+    else:
+        device = 'cpu'
 
-train_dataset = Data_simple(True, dataset_name)
-train_loader = DataLoader(train_dataset, batch_size=n_batch, num_workers=4, shuffle=True, drop_last=True)
+    # dataset_name = 'mnist' # ["mnist", "fashion", "cifar10"]
+    # n_batch = 64
+    # n_epochs = 200
+    # n_samples = 36
+    # z_dim = 100
+    to_image = ToPILImage()
 
-# print_stats(train_dataset)
+    train_dataset = Data_simple(True, args=args)
+    train_loader = DataLoader(train_dataset, batch_size=args.n_batch, num_workers=args.num_workers, shuffle=True, drop_last=True)
 
-generator = Generator(dataset_name)
-discriminator = Discriminator(dataset_name)
+    # print_stats(train_dataset)
 
-generator.to(device)
-discriminator.to(device)
+    generator = Generator(args.dataset_name)
+    discriminator = Discriminator(args.dataset_name)
 
-g_optim = optim.SGD(generator.parameters(), lr=0.001, momentum=0.9)
-d_optim = optim.SGD(discriminator.parameters(), lr=0.001, momentum=0.9)
+    generator.to(device)
+    discriminator.to(device)
 
-# TO-DO : use wandb to log
-g_losses = []
-d_losses = []
+    g_optim = optim.SGD(generator.parameters(), lr=args.lr, momentum=0.9)
+    d_optim = optim.SGD(discriminator.parameters(), lr=args.lr, momentum=0.9)
 
-img_for_gif = []
+    # TO-DO : use wandb to log
+    g_losses = []
+    d_losses = []
 
-loss_fn = nn.BCELoss()
+    img_for_gif = []
 
-fixed_z = make_noise(n_samples, z_dim).to(device)
+    loss_fn = nn.BCELoss()
+
+    fixed_z = make_noise(args.n_samples, args.z_dim).to(device)
 
 
-print(f"Starting Training...")
-start_time = time.time()
+    print(f"Starting Training...")
+    start_time = time.time()
 
-for epoch in range(n_epochs):
-    for i, data in enumerate(train_loader):
-        imgs, _ = data
-        imgs = imgs.to(device)
+    for epoch in range(args.n_epochs):
+        for i, data in enumerate(train_loader):
+            imgs, _ = data
+            imgs = imgs.to(device)
+            
+            # update D : max log(D(x)) + log(1-D(G(z)))
+            d_optim.zero_grad()
+            
+            label = make_ones(args.n_batch).to(device)
+            output = discriminator(imgs)
+            
+            D_loss_real = loss_fn(output, label)
+            D_loss_real.backward()
+            D_x = output.mean().item()
+            
+            z = make_noise(args.n_batch, args.z_dim).to(device)
+            fake = generator(z)
+            
+            label = make_zeros(args.n_batch).to(device)
+            output = discriminator(fake.detach())
+            
+            D_loss_fake = loss_fn(output, label)
+            D_loss_fake.backward()
+            D_G_z = output.mean().item()
+            
+            D_loss = D_loss_real + D_loss_fake
+            
+            d_optim.step()
+            
+            # update G : max log(D(G(z)))
+            g_optim.zero_grad()
+            
+            label = make_ones(args.n_batch).to(device)
+            output = discriminator(fake)
+
+            G_loss = loss_fn(output, label)
+            G_loss.backward()
+            
+            g_optim.step()
+            
+            if i % 50 == 0:
+                print(f"[{epoch+1}/{args.n_epochs}][{i}/{len(train_loader)}][{time.time()-start_time:.4f}s]\
+                        Loss_D: {D_loss:.4f}, Loss_G: {G_loss:.4f},\
+                        D(x): {D_x:.4f}, D(G(x)): {D_G_z:.4f}")
         
-        # update D : max log(D(x)) + log(1-D(G(z)))
-        d_optim.zero_grad()
-        
-        label = make_ones(n_batch).to(device)
-        output = discriminator(imgs)
-        
-        D_loss_real = loss_fn(output, label)
-        D_loss_real.backward()
-        D_x = output.mean().item()
-        
-        z = make_noise(n_batch, z_dim).to(device)
-        fake = generator(z)
-        
-        label = make_zeros(n_batch).to(device)
-        output = discriminator(fake.detach())
-        
-        D_loss_fake = loss_fn(output, label)
-        D_loss_fake.backward()
-        D_G_z = output.mean().item()
-        
-        D_loss = D_loss_real + D_loss_fake
-        
-        d_optim.step()
-        
-        # update G : max log(D(G(z)))
-        g_optim.zero_grad()
-        
-        label = make_ones(n_batch).to(device)
-        output = discriminator(fake)
-
-        G_loss = loss_fn(output, label)
-        G_loss.backward()
-        
-        g_optim.step()
-        
-        if i % 50 == 0:
-            print(f"[{epoch+1}/{n_epochs}][{i}/{len(train_loader)}][{time.time()-start_time:.4f}s]\
-                    Loss_D: {D_loss:.4f}, Loss_G: {G_loss:.4f},\
-                    D(x): {D_x:.4f}, D(G(x)): {D_G_z:.4f}")
-    
-    samples = generator(fixed_z)
-    tmp_images = save_results(n_samples, samples.detach(), epoch+1, dataset_name)
-    img_for_gif.append(tmp_images)
-save_gifs(n_samples, img_for_gif, n_epochs, dataset_name)
+        samples = generator(fixed_z)
+        tmp_images = save_results(args.n_samples, samples.detach(), epoch+1, args.dataset_name)
+        img_for_gif.append(tmp_images)
+    save_gifs(args.n_samples, img_for_gif, args.n_epochs, args.dataset_name)
