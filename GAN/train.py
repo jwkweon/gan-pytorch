@@ -50,7 +50,7 @@ def save_results(n_samples, samples, epoch, data):
     
     return grid_image 
 
-def save_gifs(n_samples, images, num_epochs, data):
+def save_gifs(images, num_epochs, data):
     path_save = 'results/' + f'{data}/'
     if not os.path.exists(path_save):
         os.makedirs(path_save)
@@ -78,17 +78,11 @@ if __name__ == "__main__":
     else:
         device = 'cpu'
 
-    # dataset_name = 'mnist' # ["mnist", "fashion", "cifar10"]
-    # n_batch = 64
-    # n_epochs = 200
-    # n_samples = 36
-    # z_dim = 100
     to_image = ToPILImage()
 
     train_dataset = Data_simple(True, args=args)
-    train_loader = DataLoader(train_dataset, batch_size=args.n_batch, num_workers=args.num_workers, shuffle=True, drop_last=True)
-
-    # print_stats(train_dataset)
+    train_loader = DataLoader(train_dataset, batch_size=args.n_batch, \
+                        num_workers=args.num_workers, shuffle=True, drop_last=True)
 
     generator = Generator(args.dataset_name)
     discriminator = Discriminator(args.dataset_name)
@@ -161,4 +155,4 @@ if __name__ == "__main__":
         samples = generator(fixed_z)
         tmp_images = save_results(args.n_samples, samples.detach(), epoch+1, args.dataset_name)
         img_for_gif.append(tmp_images)
-    save_gifs(args.n_samples, img_for_gif, args.n_epochs, args.dataset_name)
+    save_gifs(img_for_gif, args.n_epochs, args.dataset_name)
