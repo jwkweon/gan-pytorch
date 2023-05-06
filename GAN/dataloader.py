@@ -11,7 +11,7 @@ class Data_simple(Dataset):
 
     Args:
         train: if train, then True / else validation, then False
-        dataset: default is "MNIST". Select ["mnist", "fashion", "cifar10"]
+        args: path, dataset_name, etc. 
         
     """
     def __init__(self, train, args):
