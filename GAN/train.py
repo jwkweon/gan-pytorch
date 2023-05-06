@@ -61,7 +61,7 @@ def save_gifs(n_samples, images, num_epochs, data):
 if torch.cuda.is_available():
     device = 'cuda'
 else:
-    devise = 'cpu'
+    device = 'cpu'
 
 dataset_name = 'mnist' # ["mnist", "fashion", "cifar10"]
 n_batch = 512
