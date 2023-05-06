@@ -68,10 +68,15 @@ if __name__ == "__main__":
     parser.add_argument('--z_dim', type=int, default='100', help='lenght of latent vector')
     parser.add_argument('--lr', type=float, default='0.001', help='learning rate')
     parser.add_argument('--num_workers', type=int, default='4', help='num of loader workers')
+    parser.add_argument('--wandb_log_iters', type=int, default=50, help='logging iters')
     # parser.add_argument('--save_wandb_img_epochs', type=int, default='50', \
     #                         help='num of epochs to save wandb images')
     # parser.add_argument('--save_path', type=str, default='checkpoints')
     args = parser.parse_args()
+
+    project = "GAN"
+    proj_name = project+'-'+args.dataset_name
+    wandb.init(project=project, name = proj_name,  settings = wandb.Settings(code_dir="."))
 
     if torch.cuda.is_available():
         device = 'cuda'
@@ -147,10 +152,16 @@ if __name__ == "__main__":
             
             g_optim.step()
             
-            if i % 50 == 0:
+            if i % args.wandb_log_iters == 0:
                 print(f"[{epoch+1}/{args.n_epochs}][{i}/{len(train_loader)}][{time.time()-start_time:.4f}s]\
                         Loss_D: {D_loss:.4f}, Loss_G: {G_loss:.4f},\
                         D(x): {D_x:.4f}, D(G(x)): {D_G_z:.4f}")
+                
+                wandb.log({'loss_D': D_loss,
+                            'loss_G': G_loss,
+                            'D(x)': D_x,
+                            'D(G(z))': D_G_z,
+                            'epoch':epoch,'steps':i+(117*epoch)})   # need to fix 117 -> len_data / batch
         
         samples = generator(fixed_z)
         tmp_images = save_results(args.n_samples, samples.detach(), epoch+1, args.dataset_name)
