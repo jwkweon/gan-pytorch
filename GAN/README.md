@@ -41,5 +41,5 @@ Epochs : 500
 - [ ] add model save code
 - [ ] add infer code : load check point
 - [x] vis results
-- [ ] add argparse for hyperparams
+- [x] add argparse for hyperparams
 - [ ] update wandb to log losses 
