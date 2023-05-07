@@ -10,8 +10,8 @@ Please note that the layer parameters and their numbers in the model were arbitr
 
 ## Run Code
 
-```python
-python train.py
+```ShellSession
+$ python train.py
 ```
 
 
@@ -42,4 +42,4 @@ Epochs : 500
 - [ ] add infer code : load check point
 - [x] vis results
 - [x] add argparse for hyperparams
-- [ ] update wandb to log losses 
+- [x] update wandb to log losses 
