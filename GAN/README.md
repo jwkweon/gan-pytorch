@@ -43,3 +43,4 @@ Epochs : 500
 - [x] vis results
 - [x] add argparse for hyperparams
 - [x] update wandb to log losses 
+- [ ] update wandb to log samples

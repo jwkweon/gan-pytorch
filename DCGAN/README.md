@@ -7,8 +7,8 @@ To ensure output size (64 x 64), I set kernel size, stride, padding size to 4, 2
 
 ## Run Code
 
-```python
-python train.py
+```ShellSession
+$ python train.py
 ```
 
 
@@ -60,3 +60,4 @@ Epochs : 200
 - [ ] vis results
 - [ ] add argparse for hyperparams
 - [ ] update wandb to log losses 
+- [ ] update wandb to log samples
