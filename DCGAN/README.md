@@ -57,7 +57,7 @@ Epochs : 200
 - [ ] add model save code
 - [ ] add infer code : load check point
 - [ ] add other datasets (LSUN, ImageNet)
-- [ ] vis results
-- [ ] add argparse for hyperparams
+- [x] vis results
+- [x] add argparse for hyperparams
 - [ ] update wandb to log losses 
 - [ ] update wandb to log samples
