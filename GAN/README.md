@@ -38,9 +38,11 @@ Epochs : 500
 ### TODO
 - [x] model code
 - [x] train code
-- [ ] add model save code
-- [ ] add infer code : load check point
+- [x] add model save code
+- [x] add infer code : load check point
+- [ ] add infer code : generate samples
 - [x] vis results
 - [x] add argparse for hyperparams
 - [x] update wandb to log losses 
 - [ ] update wandb to log samples
+- [ ] update wandb sweeps

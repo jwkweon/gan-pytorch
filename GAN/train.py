@@ -57,11 +57,17 @@ def save_gifs(images, num_epochs, data):
         
     imgs = [np.array(to_image(i)) for i in images]
     imageio.mimsave(path_save + f'{num_epochs}_gif_results_{data}.gif', imgs)
+    
+def train():
+    pass
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='help')
+    parser.add_argument('--is_infer', action='store_true')
+    parser.add_argument('--ckpt', action='store_true')
     parser.add_argument('--dataset_name', type=str, help='["mnist", "fashion", "cifar10"]', default='mnist')
-    parser.add_argument('--dataset_path', type=str, default='./datasets')
+    parser.add_argument('--dataset_path', type=str, default='/home/cubox/jwkweon/datasets')
+    parser.add_argument('--save_path', type=str, default='./checkpoints')
     parser.add_argument('--n_batch', type=int, default='512', help='num of batch_size')
     parser.add_argument('--n_epochs', type=int, default='200', help='num of epochs to train')
     parser.add_argument('--n_samples', type=int, default='36', help='num to generate samples')
@@ -71,7 +77,6 @@ if __name__ == "__main__":
     parser.add_argument('--wandb_log_iters', type=int, default=50, help='logging iters')
     # parser.add_argument('--save_wandb_img_epochs', type=int, default='50', \
     #                         help='num of epochs to save wandb images')
-    # parser.add_argument('--save_path', type=str, default='checkpoints')
     args = parser.parse_args()
 
     project = "GAN"
@@ -94,9 +99,31 @@ if __name__ == "__main__":
 
     generator.to(device)
     discriminator.to(device)
-
+    
     g_optim = optim.SGD(generator.parameters(), lr=args.lr, momentum=0.9)
     d_optim = optim.SGD(discriminator.parameters(), lr=args.lr, momentum=0.9)
+    
+    if not args.is_infer:   # train
+        if not os.path.exists(args.save_path):
+            os.makedirs(args.save_path)
+        
+        if args.ckpt and os.path.isfile(args.save_path+'/last.pt'):
+            ckpt_model = torch.load(args.save_path+'/last.pt')
+            generator.load_state_dict(ckpt_model['model_G'])
+            discriminator.load_state_dict(ckpt_model['model_D'])
+
+            g_optim.load_state_dict(ckpt_model['optimizer_G'])
+            d_optim.load_state_dict(ckpt_model['optimizer_D'])
+            print('Model Loaded Successfully')            
+    else:   # infer
+        if not os.path.isfile(args.save_path+'/last.pt'):
+            raise FileNotFoundError
+        else:
+            ckpt_model = torch.load(args.save_path+'/last.pt')
+            generator.load_state_dict(ckpt_model['model_G'])
+            discriminator.load_state_dict(ckpt_model['model_D'])
+            g_optim.load_state_dict(ckpt_model['optimizer_G'])
+            d_optim.load_state_dict(ckpt_model['optimizer_D'])
 
     # TO-DO : use wandb to log
     g_losses = []
@@ -167,3 +194,14 @@ if __name__ == "__main__":
         tmp_images = save_results(args.n_samples, samples.detach(), epoch+1, args.dataset_name)
         img_for_gif.append(tmp_images)
     save_gifs(img_for_gif, args.n_epochs, args.dataset_name)
+
+    torch.save(
+        {
+            "model_D": discriminator.state_dict(),
+            "model_G": generator.state_dict(),
+            "optimizer_D": d_optim.state_dict(),
+            "optimizer_G": g_optim.state_dict(),
+        },
+        args.save_path + '/last.pt'
+    )
+    print (f'Model Saved Successfully for #epoch {epoch}')
