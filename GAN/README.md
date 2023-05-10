@@ -46,3 +46,4 @@ Epochs : 500
 - [x] update wandb to log losses 
 - [ ] update wandb to log samples
 - [ ] update wandb sweeps
+- [x] tqdm : progress bar

@@ -5,6 +5,7 @@ import numpy as np
 import imageio
 import argparse
 import wandb
+from tqdm import tqdm
 
 import torch
 import torch.nn as nn
@@ -63,8 +64,7 @@ def train():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='help')
-    parser.add_argument('--is_infer', action='store_true')
-    parser.add_argument('--ckpt', action='store_true')
+    parser.add_argument('--is_ckpt', action='store_true')
     parser.add_argument('--dataset_name', type=str, help='["mnist", "fashion", "cifar10"]', default='mnist')
     parser.add_argument('--dataset_path', type=str, default='/home/cubox/jwkweon/datasets')
     parser.add_argument('--save_path', type=str, default='./checkpoints')
@@ -79,6 +79,7 @@ if __name__ == "__main__":
     #                         help='num of epochs to save wandb images')
     args = parser.parse_args()
 
+    # wandb init
     project = "GAN"
     proj_name = project+'-'+args.dataset_name
     wandb.init(project=project, name = proj_name,  settings = wandb.Settings(code_dir="."))
@@ -103,29 +104,22 @@ if __name__ == "__main__":
     g_optim = optim.SGD(generator.parameters(), lr=args.lr, momentum=0.9)
     d_optim = optim.SGD(discriminator.parameters(), lr=args.lr, momentum=0.9)
     
-    if not args.is_infer:   # train
+    if args.is_ckpt:   # train from checkpoint
         if not os.path.exists(args.save_path):
             os.makedirs(args.save_path)
-        
-        if args.ckpt and os.path.isfile(args.save_path+'/last.pt'):
-            ckpt_model = torch.load(args.save_path+'/last.pt')
-            generator.load_state_dict(ckpt_model['model_G'])
-            discriminator.load_state_dict(ckpt_model['model_D'])
-
-            g_optim.load_state_dict(ckpt_model['optimizer_G'])
-            d_optim.load_state_dict(ckpt_model['optimizer_D'])
-            print('Model Loaded Successfully')            
-    else:   # infer
         if not os.path.isfile(args.save_path+'/last.pt'):
             raise FileNotFoundError
-        else:
-            ckpt_model = torch.load(args.save_path+'/last.pt')
-            generator.load_state_dict(ckpt_model['model_G'])
-            discriminator.load_state_dict(ckpt_model['model_D'])
-            g_optim.load_state_dict(ckpt_model['optimizer_G'])
-            d_optim.load_state_dict(ckpt_model['optimizer_D'])
+        
+        else:  
+            if args.ckpt and os.path.isfile(args.save_path+'/last.pt'):
+                ckpt_model = torch.load(args.save_path+'/last.pt')
+                generator.load_state_dict(ckpt_model['model_G'])
+                discriminator.load_state_dict(ckpt_model['model_D'])
 
-    # TO-DO : use wandb to log
+                g_optim.load_state_dict(ckpt_model['optimizer_G'])
+                d_optim.load_state_dict(ckpt_model['optimizer_D'])
+                print('Model Loaded Successfully')
+
     g_losses = []
     d_losses = []
 
@@ -140,7 +134,9 @@ if __name__ == "__main__":
     start_time = time.time()
 
     for epoch in range(args.n_epochs):
-        for i, data in enumerate(train_loader):
+        print ('#Epoch - '+str(epoch))
+        
+        for i, data in enumerate(tqdm(train_loader)):
             imgs, _ = data
             imgs = imgs.to(device)
             
@@ -180,10 +176,6 @@ if __name__ == "__main__":
             g_optim.step()
             
             if i % args.wandb_log_iters == 0:
-                print(f"[{epoch+1}/{args.n_epochs}][{i}/{len(train_loader)}][{time.time()-start_time:.4f}s]\
-                        Loss_D: {D_loss:.4f}, Loss_G: {G_loss:.4f},\
-                        D(x): {D_x:.4f}, D(G(x)): {D_G_z:.4f}")
-                
                 wandb.log({'loss_D': D_loss,
                             'loss_G': G_loss,
                             'D(x)': D_x,
