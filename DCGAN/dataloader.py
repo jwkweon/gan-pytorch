@@ -1,8 +1,8 @@
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from torchvision.datasets import MNIST, FashionMNIST, CIFAR10
 from torchvision import transforms
-
+import numpy as np
 
 class Data_simple(Dataset):
     """Data_simple
@@ -15,9 +15,10 @@ class Data_simple(Dataset):
         dataset: default is "MNIST". Select ["mnist", "fashion", "cifar10"]
         
     """
-    def __init__(self, train, dataset="mnist"):
+    def __init__(self, train, args):
         # Define the directory for save or load.
-        PATH = './datasets'
+        PATH = args.dataset_path
+        dataset = args.dataset_name
 
         # Define the transform to apply to the data : range of data -> [-1, 1]
         if dataset in ["mnist", "fashion"]:

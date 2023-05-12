@@ -54,10 +54,12 @@ Epochs : 200
 ### TODO
 - [x] model code
 - [x] train code
-- [ ] add model save code
+- [x] add model save code
 - [ ] add infer code : load check point
+- [ ] add inger code : generate samples
 - [ ] add other datasets (LSUN, ImageNet)
 - [x] vis results
 - [x] add argparse for hyperparams
 - [ ] update wandb to log losses 
 - [ ] update wandb to log samples
+- [x] tqdm : progress bar
