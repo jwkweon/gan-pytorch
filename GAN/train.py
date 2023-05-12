@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='help')
     parser.add_argument('--is_ckpt', action='store_true')
     parser.add_argument('--dataset_name', type=str, help='["mnist", "fashion", "cifar10"]', default='mnist')
-    parser.add_argument('--dataset_path', type=str, default='/home/cubox/jwkweon/datasets')
+    parser.add_argument('--dataset_path', type=str, default='./datasets')
     parser.add_argument('--save_path', type=str, default='./checkpoints')
     parser.add_argument('--n_batch', type=int, default='512', help='num of batch_size')
     parser.add_argument('--n_epochs', type=int, default='200', help='num of epochs to train')
