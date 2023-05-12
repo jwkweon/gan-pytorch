@@ -189,7 +189,7 @@ if __name__ == "__main__":
         if (epoch+1) % 10 == 0:
             save_results(args.n_samples, samples.detach(), epoch+1, args.dataset_name)
         
-    save_gifs(img_for_gif, n_epochs, args.dataset_name)
+    save_gifs(img_for_gif, args.n_epochs, args.dataset_name)
     
     torch.save(
         {
