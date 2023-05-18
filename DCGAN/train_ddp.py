@@ -138,7 +138,6 @@ if __name__ == "__main__":
     project = "DCGAN"
     proj_name = project + '-' + args.dataset_name
     if is_main_process():
-        print('ddd')
         wandb.init(project=project, name = proj_name,  settings = wandb.Settings(code_dir="."))
     
     local_rank = int(os.environ['LOCAL_RANK'])
