@@ -40,7 +40,7 @@ Epochs : 500
 - [x] train code
 - [x] add model save code
 - [x] add infer code : load check point
-- [ ] add infer code : generate samples
+- ~~[ ] add infer code : generate samples~~
 - [x] vis results
 - [x] add argparse for hyperparams
 - [x] update wandb to log losses 
