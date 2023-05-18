@@ -55,9 +55,10 @@ Epochs : 200
 - [x] model code
 - [x] train code
 - [x] add model save code
-- [ ] add infer code : load check point
-- [ ] add inger code : generate samples
-- [ ] add other datasets (LSUN, ImageNet)
+- [x] add load check point
+- [ ] add infer code : generate samples
+- [x] add other datasets (ImageNet)
+- [ ] add other datasets (LSUN)
 - [x] vis results
 - [x] add argparse for hyperparams
 - [ ] update wandb to log losses 

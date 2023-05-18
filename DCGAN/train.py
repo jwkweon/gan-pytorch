@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 from dcgan import Generator, Discriminator, Generator_cifar10, Discriminator_cifar10
 
-from dataloader import Data_simple
+from dataloader import Data_simple, ImageNetDataset
 from torch.utils.data import DataLoader
 import torch.optim as optim
 
@@ -66,6 +66,7 @@ if __name__ == "__main__":
     parser.add_argument('--is_ckpt', action='store_true')
     parser.add_argument('--dataset_name', type=str, help='["cifar10", "lsun", "imagenet"]', default='cifar10')
     parser.add_argument('--dataset_path', type=str, default='./datasets')
+    parser.add_argument('--save_path', type=str, default='./checkpoints')
     parser.add_argument('--n_batch', type=int, default='1024', help='num of batch_size')
     parser.add_argument('--n_epochs', type=int, default='500', help='num of epochs to train')
     parser.add_argument('--n_samples', type=int, default='36', help='num to generate samples')
@@ -87,16 +88,20 @@ if __name__ == "__main__":
     
     to_image = ToPILImage()
     
-    train_dataset = Data_simple(True, args=args)
-    train_loader = DataLoader(train_dataset, batch_size=args.n_batch, \
-                        num_workers=args.num_workers, shuffle=True, drop_last=True)
+    
     
     if args.dataset_name == 'cifar10':
         train_dataset = Data_simple(True, args=args)
         generator = Generator_cifar10()
         discriminator = Discriminator_cifar10()
-    else: # 'lsun', 'imagenet'
-        raise Exception('Dataset is not prepared!')
+    elif args.dataset_name == 'imagenet': # 'lsun', 'imagenet'
+        train_dataset = ImageNetDataset(args)
+        print('Dataset loaded successfully!')
+        generator = Generator()
+        discriminator = Discriminator()
+        
+    train_loader = DataLoader(train_dataset, batch_size=args.n_batch, \
+                    num_workers=args.num_workers, shuffle=True, drop_last=True)
 
     generator.to(device)
     discriminator.to(device)
@@ -138,7 +143,10 @@ if __name__ == "__main__":
         print ('#Epoch - '+str(epoch))
         
         for i, data in enumerate(tqdm(train_loader)):
-            imgs, _ = data
+            if args.dataset_name == 'cifar10':
+                imgs, _ = data
+            else:
+                imgs = data
             imgs = imgs.to(device)
             
             # update D : max log(D(x)) + log(1-D(G(z)))
