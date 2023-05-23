@@ -11,6 +11,15 @@ To ensure output size (64 x 64), I set kernel size, stride, padding size to 4, 2
 $ python train.py
 ```
 
+## DDP MULTI-GPUs Training
+
+if you have multi-gpus using it to train more faster!
+I use it for imagenet.
+
+```ShellSession
+$ python -m torch.distributed.launch --nproc_per_node={num gpus} --master_port={port} train_ddp.py --dataset_name 'imagenet' --dataset_path {your dataset path} --n_batch {batchsize}
+```
+
 
 ## Generated Images
 ### CIFAR10
@@ -64,3 +73,4 @@ Epochs : 200
 - [ ] update wandb to log losses 
 - [ ] update wandb to log samples
 - [x] tqdm : progress bar
+- [x] ddp : support multi-gpu training
